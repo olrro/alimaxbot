@@ -77,7 +77,7 @@ if (isset($update->message) or isset($update->edited_message)) {
 
         $client->sendMessage(
           $chat_id, implode( PHP_EOL, $text ), 'markdown',
-          null, null, null, null, null,
+          null, 1, null, null, null,
           $menu
         );
 
