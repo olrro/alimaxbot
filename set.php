@@ -45,7 +45,7 @@ if (isset($_POST["yes"])) {
     } else {
         $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
         $explode = explode("set.php", $link);
-        $link = $explode[0] . "webhook.php";
+        $link = $explode[0] . "bot.php";
     }
 
     echo "<p><input type=\"hidden\" name=\"link\" value=\"" . htmlspecialchars($link) . "\" /></p>";
@@ -99,7 +99,7 @@ if (isset($_POST["yes"])) {
     $explode = explode("set.php", $actual_link);
 
     echo "<p>Is the link correct?</p>";
-    echo "<p>" . htmlspecialchars($explode[0]) . "webhook.php</p>";
+    echo "<p>" . htmlspecialchars($explode[0]) . "bot.php</p>";
     echo "<p><button type=\"submit\" name=\"yes\">Yes</button>";
     echo "<button type=\"submit\" name=\"no\">No</button></p>";
 

@@ -1,5 +1,14 @@
 {
     "require": {
+		"ext-mbstring": "*",
+		"ext-curl": "*",
+		"ext-imap": "*",
+		"ext-gd": "*",
+		"ext-sockets": "*",
+		"ext-fileinfo": "*",
+		"ext-exif": "*",
+		"ext-openssl": "*",
+		"ext-zip": "*",
         "davtur19/turibot": "^1.8"
     }
 }
