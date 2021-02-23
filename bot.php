@@ -25,9 +25,9 @@ if ( isset( $update->message ) ) {
     $message_id = $client->easy->message_id;
     $text = $client->easy->text;
 
-    switch ( 1 ) {
+    switch ( true ) {
 
-      case ( $storage['section'] == 'create' ):
+      case ( $storage['section'] === 'create' ):
 
         if ( preg_match( '/^([0-9]+) (.*){1,500}$/iU', $text, $description ) ) {
 
@@ -97,7 +97,7 @@ if ( isset( $update->message ) ) {
 
       break;
 
-      case ( $text == '/create' ):
+      case ( $text === '/create' ):
 
         $client->sendMessage(
           $chat_id,
@@ -108,7 +108,7 @@ if ( isset( $update->message ) ) {
 
       break;
 
-      case ( $text == '/post' ):
+      case ( $text === '/post' ):
 
         if ( empty( $storage['ready'] ) ) {
 
@@ -134,7 +134,7 @@ if ( isset( $update->message ) ) {
 
       break;
 
-      case ( $text == '/stop' ):
+      case ( $text === '/stop' ):
 
         $client->sendMessage(
           $chat_id,
