@@ -70,14 +70,14 @@ if (isset($update->message) or isset($update->edited_message)) {
 
         $text = [];
 
-        $text[] = "[]({$item['image']}) Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст;" . PHP_EOL;
+        $text[] = "[​​​​​​​​​​​]({$item['image']}) Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст;" . PHP_EOL;
         $text[] = "Цена - {$item['price']}";
         $text[] = "Рейтинг - {$item['rating']} оценка / {$item['orders']} заказа(ов)";
         $text[] = "Отзывов - {$item['reviews']}";
 
         $client->sendMessage(
           $chat_id, implode( PHP_EOL, $text ), 'markdown',
-          null, 1, null, null, null,
+          null, null, null, null, null,
           $menu
         );
 
