@@ -16,46 +16,79 @@ if (!isset($update)) {
 }
 
 if (isset($update->message) or isset($update->edited_message)) {
+
     $chat_id = $client->easy->chat_id;
     $message_id = $client->easy->message_id;
     $text = $client->easy->text;
 
-    if ($text === "/start") {
-        $client->sendMessage($chat_id, "ping");
-        $client->sendMessage($chat_id, "pong");
-        $client->forwardMessage($chat_id, $chat_id, null, $message_id);
-    }
+    if ( $text ) {
 
-    if ($text === "/help") {
+      $item = [];
 
-        $menu["inline_keyboard"] = [
-            [
-                [
-                    "text"          => "Button 1",
-                    "callback_data" => "btn1",
-                ],
-            ],
-            [
-                [
-                    "text"          => "Button 2",
-                    "callback_data" => "btn2",
-                ],
-                [
-                    "text"          => "Button 3",
-                    "callback_data" => "btn3",
-                ],
-            ],
-        ];
+      $item['url'] = 'https://aliexpress.ru/item/' . intval( $text ) . '.html';
+      $item['html'] = @file_get_contents( $item['url'] );
 
-        $a = $client->sendMessage($chat_id, "help", null, null, null, null, null, null, $menu);
+      preg_match( '/<meta property="og:image" content="(.*)"\/>/iU', $item['html'], $match );
+
+      if ( !empty( $match[1] ) ) {
+        $item['image'] = @base64_encode( @file_get_contents( $match[1] ) );
+      }
+
+      preg_match( '/"totalValidNum":(.*),/iU', $item['html'], $match );
+
+      if ( !empty( $match[1] ) ) {
+        $item['reviews'] = intval( $match[1] );
+      }
+
+      preg_match( '/"formatTradeCount":"(.*)",/iU', $item['html'], $match );
+
+      if ( !empty( $match[1] ) ) {
+        $item['orders'] = intval( $match[1] );
+      }
+
+      preg_match( '/"averageStar":"(.*)",/iU', $item['html'], $match );
+
+      if ( !empty( $match[1] ) ) {
+        $item['rating'] = floatval( $match[1] );
+      }
+
+      preg_match( '/"formatedAmount":"(.*)",/iU', $item['html'], $match );
+
+      if ( !empty( $match[1] ) ) {
+        $item['price'] = floatval( $match[1] );
+      }
+
+      $menu["inline_keyboard"] = [
+          [
+            [ "text" => "👍", "callback_data" => "like" ],
+            [ "text" => "👎", "callback_data" => "dislike" ],
+          ],
+          [
+            [ "text" => "Купить 🧨", "callback_data" => "http://www.google.com/" ],
+          ],
+      ];
+
+        $text = [];
+
+        $text[] = "Цена - {$item['price']}";
+        $text[] = "Рейтинг - {$item['rating']} оценка / {$item['orders']} заказа(ов)";
+        $text[] = "Отзывов - {$item['reviews']}";
+
+        $client->sendMessage(
+          $chat_id, implode( PHP_EOL, $text ),
+          null, null, null, null, null, null,
+          $menu
+        );
+
     }
 
     if ($text === "/var") {
         $client->debug($chat_id, $client->easy->message_id, ["key" => "value"], "pong", 3.14);
     }
+
 }
 
-if (isset($update->callback_query)) {
+if ( isset( $update->callback_query ) ) {
 
     $id = $update->callback_query->id;
     $message_chat_id = $update->callback_query->message->chat->id;
@@ -64,30 +97,31 @@ if (isset($update->callback_query)) {
     $menu["inline_keyboard"] = [
         [
             [
-                "text"          => "Button 1",
-                "callback_data" => "btn1",
+                "text"          => "👍",
+                "callback_data" => "like",
+            ],
+            [
+                "text"          => "👎",
+                "callback_data" => "dislike",
             ],
         ],
         [
             [
-                "text"          => "Button 2",
-                "callback_data" => "btn2",
-            ],
-            [
-                "text"          => "Button 3",
-                "callback_data" => "btn3",
-            ],
+                "text"          => "Купить 🧨",
+                "url" => "http://www.google.com/",
+            ]
         ],
     ];
 
-    if ($update->callback_query->data === "btn1") {
-        $client->answerCallbackQuery($id, "Button 1");
-        $client->editMessageText($message_chat_id, $message_message_id, null, "Button 1", null, null, null, $menu);
-    } elseif ($update->callback_query->data === "btn2") {
-        $client->answerCallbackQuery($id, "Button 2");
-        $client->editMessageText($message_chat_id, $message_message_id, null, "Button 2", null, null, null, $menu);
-    } elseif ($update->callback_query->data === "btn3") {
-        $client->answerCallbackQuery($id, "Button 3");
-        $client->editMessageText($message_chat_id, $message_message_id, null, "Button 3", null, null, null, $menu);
+    if ($update->callback_query->data === "like") {
+
+      $client->answerCallbackQuery($id, "👍 1");
+      $client->editMessageText($message_chat_id, $message_message_id, null, "Button 1", null, null, null, $menu);
+
+    } elseif ($update->callback_query->data === "dislike") {
+
+      $client->answerCallbackQuery($id, "👎 1");
+      $client->editMessageText($message_chat_id, $message_message_id, null, "Button 2", null, null, null, $menu);
+
     }
 }
