@@ -88,6 +88,7 @@ if ( isset( $update->message ) ) {
           $text[] = "Отзывов - {$item['reviews']}";
 
           $storage['message'] = implode( PHP_EOL, $text );
+          $storage['menu'] = $menu;
 
           $client->sendMessage(
             $chat_id, implode( PHP_EOL, $text ), 'markdown',
@@ -141,7 +142,12 @@ if ( isset( $update->message ) ) {
       else {
 
         $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
-        $client->sendMessage( '-1001432760770', $storage['message'] );
+
+        $client->sendMessage(
+          '-1001432760770', $storage['message'], 'markdown',
+          null, null, null, null, null,
+          $storage['menu']
+        );
 
         $storage = [];
 
