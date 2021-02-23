@@ -9,7 +9,13 @@ if ( !isset( $_GET["api"] ) ) {
 }
 
 $storage = @file_get_contents( __DIR__ . '/storage.db' );
-if ( !@json_decode( $storage, 1 ) ) $storage = [];
+
+if ( !@json_decode( $storage, 1 ) ){
+
+  $storage = [];
+  $storage['section'] = 'start';
+
+}
 
 $client = new Client( $_GET["api"] );
 $update = $client->getUpdate();
