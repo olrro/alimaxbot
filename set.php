@@ -36,7 +36,7 @@ if (isset($_POST["connections"]) and !((1 <= $_POST["connections"]) and ($_POST[
 }
 
 
-echo "<form action=\"setupWebhook.php\" method=\"POST\">";
+echo "<form action=\"set.php\" method=\"POST\">";
 
 if (isset($_POST["yes"])) {
 
@@ -44,7 +44,7 @@ if (isset($_POST["yes"])) {
         $link = strip_tags($_POST["link"]);
     } else {
         $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-        $explode = explode("setupWebhook.php", $link);
+        $explode = explode("set.php", $link);
         $link = $explode[0] . "webhook.php";
     }
 
@@ -96,7 +96,7 @@ if (isset($_POST["yes"])) {
 } else {
 
     $actual_link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-    $explode = explode("setupWebhook.php", $actual_link);
+    $explode = explode("set.php", $actual_link);
 
     echo "<p>Is the link correct?</p>";
     echo "<p>" . htmlspecialchars($explode[0]) . "webhook.php</p>";
