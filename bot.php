@@ -5,12 +5,15 @@ use TuriBot\Client;
 require_once __DIR__ . "/vendor/autoload.php";
 
 if ( !isset( $_GET["api"] ) ) {
-    exit();
+  exit();
 }
 
-$storage = @file_get_contents( __DIR__ . '/storage.db' );
+Predis\Autoloader::register();
 
-if ( !$storage = @json_decode( $storage, 1 ) ){
+$redis = new Predis\Client( $_ENV['REDIS_URL'] );
+$storage = @json_decode( $redis->get( 'database' ), 1 );
+
+if ( !$storage ){
 
   $storage = [];
   $storage['section'] = 'start';
@@ -83,9 +86,9 @@ if ( isset( $update->message ) ) {
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}) {$item['description']}" . PHP_EOL;
-          $text[] = "Цена - {$item['price']}";
-          $text[] = "Рейтинг - {$item['rating']} оценка / {$item['orders']} заказа(ов)";
-          $text[] = "Отзывов - {$item['reviews']}";
+          $text[] = "Цена - [{$item['price']}]({$item['url']})";
+          $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказа(ов)";
+          $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
 
           $storage['message'] = implode( PHP_EOL, $text );
           $storage['menu'] = $menu;
@@ -171,40 +174,48 @@ if ( isset( $update->message ) ) {
 if ( isset( $update->callback_query ) ) {
 
     $id = $update->callback_query->id;
-    $message_chat_id = $update->callback_query->message->chat->id;
-    $message_message_id = $update->callback_query->message->message_id;
+    $chat_id = $update->callback_query->message->chat->id;
+    $message_id = $update->callback_query->message->message_id;
+
+    if ( $update->callback_query->data == "like" ) {
+
+      if ( isset( $storage['likes'][$message_id] ) ) {
+        $storage['likes'][$message_id] = $storage['likes'][$message_id] + 1;
+      }
+      else {
+        $storage['likes'][$message_id] = 1;
+      }
+
+    } elseif ( $update->callback_query->data == "dislike" ) {
+
+
+      if ( isset( $storage['dislikes'][$message_id] ) ) {
+        $storage['dislikes'][$message_id] = $storage['dislikes'][$message_id] + 1;
+      }
+      else {
+        $storage['dislikes'][$message_id] = 1;
+      }
+
+    }
 
     $menu["inline_keyboard"] = [
         [
-            [
-                "text"          => "👍",
-                "callback_data" => "like",
-            ],
-            [
-                "text"          => "👎",
-                "callback_data" => "dislike",
-            ],
+          [ "text" => "👍 {$storage['likes'][$message_id]}", "callback_data" => "like" ],
+          [ "text" => "👎 {$storage['dislikes'][$message_id]}", "callback_data" => "dislike" ],
         ],
         [
-            [
-                "text"          => "Купить 🧨",
-                "url" => "http://www.google.com/",
-            ]
+          [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ],
         ],
     ];
 
-    if ($update->callback_query->data === "like") {
+    $client->answerCallbackQuery( $id, "Рейтинг был успешно изменен!" );
+    $client->editMessageText(
+      $chat_id, $message_id, null, "Button 2",
+      null, null, null,
+      $menu
+    );
 
-      $client->answerCallbackQuery($id, "👍 1");
-      $client->editMessageText($message_chat_id, $message_message_id, null, "Button 1", null, null, null, $menu);
-
-    } elseif ($update->callback_query->data === "dislike") {
-
-      $client->answerCallbackQuery($id, "👎 1");
-      $client->editMessageText($message_chat_id, $message_message_id, null, "Button 2", null, null, null, $menu);
-
-    }
 }
 
 $storage = json_encode( $storage );
-@file_put_contents( __DIR__ . '/storage.db', $storage );
+$redis->set( 'database', $storage );
