@@ -29,7 +29,7 @@ if ( isset( $update->message ) ) {
 
     switch ( true ) {
 
-      case ( $storage['section'] === 'create' ):
+      case ( $storage['section'] === 'create' AND !isset( $storage['ready'] ) ):
 
         if ( preg_match( '/^([0-9]+) (.*){1,500}$/iU', $text, $description ) ) {
 
@@ -62,6 +62,7 @@ if ( isset( $update->message ) ) {
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
           $text[] = "Цена - [{$item['price']}]({$item['url']})";
+
           $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказа(ов)";
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
 
@@ -74,13 +75,11 @@ if ( isset( $update->message ) ) {
             ]
           ];
 
-          $a = $client->sendMessage(
+          $client->sendMessage(
             $chat_id, $storage['ready']['text'], 'markdown',
             null, null, null, null, null,
             $storage['ready']['buttons']
           );
-
-          $client->debug( $chat_id, $a );
 
           $client->sendMessage(
             $chat_id,
