@@ -63,9 +63,9 @@ if ( isset( $update['message'] ) ) {
           $text[] = "Цена - [{$item['price']}]({$item['url']})";
 
           if ( isset( $item['discount'] ) )
-          $text[] = "Скидка - имеется ([{$item['discount']}]({$item['url']}))";
+          $text[] = "Скидка - имеется (-[{$item['discount']}]({$item['url']}))";
 
-          $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказа(ов)";
+          $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
 
           $storage['ready']['text'] = implode( PHP_EOL, $text );
