@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'TuriBot\\' => array($vendorDir . '/davtur19/turibot/src'),
+    'Predis\\' => array($vendorDir . '/predis/predis/src'),
 );

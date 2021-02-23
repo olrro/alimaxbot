@@ -11,12 +11,20 @@ class ComposerStaticInit3713e3f5fee8c308eb41ec26b851cdc7
         array (
             'TuriBot\\' => 8,
         ),
+        'P' => 
+        array (
+            'Predis\\' => 7,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'TuriBot\\' => 
         array (
             0 => __DIR__ . '/..' . '/davtur19/turibot/src',
+        ),
+        'Predis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
     );
 

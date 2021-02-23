@@ -9,6 +9,7 @@
 		"ext-exif": "*",
 		"ext-openssl": "*",
 		"ext-zip": "*",
-        "davtur19/turibot": "^1.8"
+        "davtur19/turibot": "^1.8",
+        "predis/predis": "^1.1"
     }
 }
