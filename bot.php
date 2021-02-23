@@ -24,7 +24,6 @@ if (isset($update->message) or isset($update->edited_message)) {
         $client->sendMessage($chat_id, "ping");
         $client->sendMessage($chat_id, "pong");
         $client->forwardMessage($chat_id, $chat_id, null, $message_id);
-        $client->sendPhoto($chat_id, $client->inputFile("TuriPixel.png"), "File upload");
     }
 
     if ($text === "/help") {
