@@ -119,28 +119,44 @@ if ( isset( $update->message ) ) {
 
     if ( $text == '/create' ) {
 
-      $storage['section'] = 'create';
-
       $client->sendMessage(
         $chat_id,
         'Чтобы создать новый пост введите идентификатор товара на Aliexpress (https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
       );
 
+      $storage['section'] = 'create';
+
     }
 
-    if ( $text == '/post' AND $storage['section'] == 'create' ) {
-      // code...
+    if ( $text == '/post' ) {
+
+      if ( empty( $storage['message'] ) ) {
+
+        $client->sendMessage(
+          $chat_id,
+          'Внимание, ваш пост еще не готов. Введите команду /create, чтобы создать новую запись'
+        );
+
+      }
+      else {
+
+        $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
+        $client->sendMessage( '-1001432760770', $storage['message'] );
+
+        unset( $storage );
+
+      }
+
     }
 
     if ( $text == '/stop' ) {
-
-      $storage['section'] = 'start';
-      unset( $storage['message'] );
 
       $client->sendMessage(
         $chat_id,
         'Публикация поста была отменена, чтобы создать новый пост введите команду /create'
       );
+
+      unset( $storage['message'] );
 
     }
 
