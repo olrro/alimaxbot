@@ -71,11 +71,13 @@ if ( isset( $update->message ) ) {
             [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ],
           ];
 
-          $client->sendMessage(
+          $a = $client->sendMessage(
             $chat_id, $storage['ready']['text'], 'markdown',
             null, null, null, null, null,
             $storage['ready']['buttons']
           );
+
+          $client->debug( $chat_id, $a );
 
           $client->sendMessage(
             $chat_id,
