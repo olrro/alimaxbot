@@ -29,7 +29,7 @@ if ( isset( $update['message'] ) ) {
 
       case ( $storage['section'] === 'create' AND !isset( $storage['ready'] ) ):
 
-        if ( preg_match( '/^([0-9]+) (.*){1,500}$/iU', $text, $description ) ) {
+        if ( preg_match( '/([0-9]{1,20}) .{1,500}/sU', $text, $description ) ) {
 
           $item = [];
 
@@ -63,7 +63,7 @@ if ( isset( $update['message'] ) ) {
           $text[] = "Цена - [{$item['price']}]({$item['url']})";
 
           if ( isset( $item['discount'] ) )
-          $text[] = "Скидка - имеется (-[{$item['discount']}]({$item['url']}))";
+          $text[] = "Скидка - имеется ([-{$item['discount']}]({$item['url']}))";
 
           $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
@@ -72,7 +72,7 @@ if ( isset( $update['message'] ) ) {
           $storage['ready']['buttons'] = [
             'inline_keyboard' =>
             [
-              [ [ "text" => "👍", "callback_data" => "like" ], [ "text" => "😻", "callback_data" => "dislike" ] ],
+              [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😻", "callback_data" => "emoji" ] ],
               [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
             ]
           ];
@@ -98,7 +98,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage(
             $chat_id,
-            'Чтобы создать новый пост введите идентификатор товара на Aliexpress (https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+            'Чтобы создать новый пост введите идентификатор товара на [Aliexpress](https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
           );
 
         }
@@ -109,7 +109,7 @@ if ( isset( $update['message'] ) ) {
 
         $client->sendMessage(
           $chat_id,
-          'Чтобы создать новый пост введите идентификатор товара на Aliexpress (https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+          'Чтобы создать новый пост введите идентификатор товара на [Aliexpress](https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
         );
 
         $storage['section'] = 'create';
@@ -135,11 +135,6 @@ if ( isset( $update['message'] ) ) {
             null, null, null, null, null,
             $storage['ready']['buttons']
           );
-
-          $storage['posts'][] = [
-            'text' => $storage['ready']['text'],
-            'buttons' => $storage['ready']['buttons']
-          ];
 
           unset( $storage['ready'] );
 
@@ -181,11 +176,11 @@ if ( isset( $update['callback_query'] ) ) {
     $message_id = $message['message_id'];
     $buttons = $message['reply_markup']['inline_keyboard'];
 
-    if ( $update['data'] == "like" ) {
+    if ( $update['data'] == "finger" ) {
 
       $buttons[0][0]['text'] = '👍 ' . ( intval( ltrim( $buttons[0][0]['text'], '👍' ) ) + 1 );
 
-    } elseif ( $update['data'] == "dislike" ) {
+    } elseif ( $update['data'] == "emoji" ) {
 
       $buttons[0][1]['text'] = '😻 ' . ( intval( ltrim( $buttons[0][1]['text'], '😻' ) ) + 1 );
 
