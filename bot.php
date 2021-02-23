@@ -25,6 +25,8 @@ if ( isset( $update->message ) ) {
     $message_id = $client->easy->message_id;
     $text = $client->easy->text;
 
+    $client->debug( $storage );
+
     switch ( true ) {
 
       case ( $storage['section'] === 'create' ):
