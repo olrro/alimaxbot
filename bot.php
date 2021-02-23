@@ -68,8 +68,7 @@ if ( isset( $update['message'] ) ) {
           $storage['ready']['buttons'] = [
             'inline_keyboard' =>
             [
-              [ [ "text" => "👍", "callback_data" => "like" ], [ "text" => "👎", "callback_data" => "dislike" ] ],
-              [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
+              [ [ "text" => "👍", "callback_data" => "like" ], [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
             ]
           ];
 
