@@ -177,16 +177,13 @@ if ( isset( $update['callback_query'] ) ) {
     $message_id = $message['message_id'];
     $buttons = $message['reply_markup']['inline_keyboard'];
 
-    $likes = intval( ltrim( $buttons[0][0]['text'], '👍' ) );
-    $dislikes = intval( ltrim( $buttons[0][1]['text'], '👎' ) );
-
     if ( $update['data'] == "like" ) {
 
-      $buttons[0][0]['text'] = '👍' . $likes++;
+      $buttons[0][0]['text'] = '👍' . intval( ltrim( $buttons[0][0]['text'], '👍' ) ) + 1;
 
     } elseif ( $update['data'] == "dislike" ) {
 
-      $buttons[0][1]['text'] = '👎' . $dislikes++;
+      $buttons[0][1]['text'] = '👎' . intval( ltrim( $buttons[0][1]['text'], '👎' ) ) + 1;
 
     }
 
