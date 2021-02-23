@@ -29,7 +29,7 @@ if ( isset( $update['message'] ) ) {
 
       case ( $storage['section'] === 'create' AND !isset( $storage['ready'] ) ):
 
-        if ( preg_match( '/([0-9]{1,20}) .{1,500}/sU', $text, $description ) ) {
+        if ( preg_match( '/([0-9]{1,20}) (.{1,500})/s', $text, $description ) ) {
 
           $item = [];
 
