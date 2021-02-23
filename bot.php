@@ -31,7 +31,7 @@ if (isset($update->message) or isset($update->edited_message)) {
       preg_match( '/<meta property="og:image" content="(.*)"\/>/iU', $item['html'], $match );
 
       if ( !empty( $match[1] ) ) {
-        $item['image'] = @base64_encode( @file_get_contents( $match[1] ) );
+        $item['image'] = $match[1];
       }
 
       preg_match( '/"totalValidNum":(.*),/iU', $item['html'], $match );
@@ -55,7 +55,7 @@ if (isset($update->message) or isset($update->edited_message)) {
       preg_match( '/"formatedAmount":"(.*)",/iU', $item['html'], $match );
 
       if ( !empty( $match[1] ) ) {
-        $item['price'] = floatval( $match[1] );
+        $item['price'] = $match[1];
       }
 
       $menu["inline_keyboard"] = [
@@ -70,13 +70,14 @@ if (isset($update->message) or isset($update->edited_message)) {
 
         $text = [];
 
+        $text[] = "[]({$item['image']}) Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст;" . PHP_EOL;
         $text[] = "Цена - {$item['price']}";
         $text[] = "Рейтинг - {$item['rating']} оценка / {$item['orders']} заказа(ов)";
         $text[] = "Отзывов - {$item['reviews']}";
 
         $client->sendMessage(
-          $chat_id, implode( PHP_EOL, $text ),
-          null, null, null, null, null, null,
+          $chat_id, implode( PHP_EOL, $text ), 'markdown',
+          null, null, null, null, null,
           $menu
         );
 
