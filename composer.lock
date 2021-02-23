@@ -1,0 +1,57 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "5e3face8dd517c505cc7047c770cd3d1",
+    "packages": [
+        {
+            "name": "davtur19/turibot",
+            "version": "1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/davtur19/TuriBot.git",
+                "reference": "5c18ca3abf976db685a8b93c23e37a01347facd5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/davtur19/TuriBot/zipball/5c18ca3abf976db685a8b93c23e37a01347facd5",
+                "reference": "5c18ca3abf976db685a8b93c23e37a01347facd5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^7.1 | ^8"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "TuriBot\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "davtur19",
+                    "email": "dav.tur19@gmail.com"
+                }
+            ],
+            "description": "A simple way to communicate with Telegram APIs in PHP.",
+            "time": "2021-01-31T19:52:44+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}
