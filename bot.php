@@ -26,28 +26,9 @@ if ( isset( $update->message ) ) {
     $message_id = $client->easy->message_id;
     $text = $client->easy->text;
 
-    if ( $text == '/create' ) {
-
-      $storage['section'] = 'create';
-
-      $client->sendMessage(
-        $chat_id,
-        'Чтобы создать новый пост введите идентификатор товара на Aliexpress (https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
-      );
-
-    }
-
-    if ( $text == '/post' AND $storage['section'] == 'create' ) {
-      // code...
-    }
-
-    if ( $text == '/stop' ) {
-      $storage = [];
-    }
-
     if ( $storage['section'] == 'create' ) {
 
-      preg_match( '/^([0-9]+) ([A-Za-zА-Яа-яёЁ0-9\s]+)$/iU', $text, $description );
+      preg_match( '/^([0-9]+) (.*){1,500}$/iU', $text, $description );
 
       if ( isset( $description['1'] ) AND isset( $description['2'] ) ) {
 
@@ -106,9 +87,11 @@ if ( isset( $update->message ) ) {
           $text[] = "Рейтинг - {$item['rating']} оценка / {$item['orders']} заказа(ов)";
           $text[] = "Отзывов - {$item['reviews']}";
 
+          $storage['message'] = implode( PHP_EOL, $text );
+
           $client->sendMessage(
-            $chat_id, implode( PHP_EOL, $text ),
-            null, null, null, null, null, null,
+            $chat_id, implode( PHP_EOL, $text ), 'markdown',
+            null, null, null, null, null,
             $menu
           );
 
@@ -134,8 +117,31 @@ if ( isset( $update->message ) ) {
 
     }
 
-    if ($text === "/var") {
-        $client->debug($chat_id, $client->easy->message_id, ["key" => "value"], "pong", 3.14);
+    if ( $text == '/create' ) {
+
+      $storage['section'] = 'create';
+
+      $client->sendMessage(
+        $chat_id,
+        'Чтобы создать новый пост введите идентификатор товара на Aliexpress (https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+      );
+
+    }
+
+    if ( $text == '/post' AND $storage['section'] == 'create' ) {
+      // code...
+    }
+
+    if ( $text == '/stop' ) {
+
+      $storage['section'] = 'start';
+      unset( $storage['message'] );
+
+      $client->sendMessage(
+        $chat_id,
+        'Публикация поста была отменена, чтобы создать новый пост введите команду /create'
+      );
+
     }
 
 }
