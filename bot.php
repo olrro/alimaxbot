@@ -72,7 +72,7 @@ if ( isset( $update->message ) ) {
           ];
 
           $client->sendMessage(
-            $chat_id, implode( PHP_EOL, $storage['ready']['text'] ), 'markdown',
+            $chat_id, $storage['ready']['text'], 'markdown',
             null, null, null, null, null,
             $storage['ready']['buttons']
           );
