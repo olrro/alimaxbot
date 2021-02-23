@@ -29,7 +29,7 @@ if ( isset( $update->message ) ) {
 
     switch ( true ) {
 
-      case ( $storage['section'] === 'create' ):
+      case ( 0 ):
 
         if ( preg_match( '/^([0-9]+) (.*){1,500}$/iU', $text, $description ) ) {
 
