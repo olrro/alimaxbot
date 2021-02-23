@@ -143,7 +143,7 @@ if ( isset( $update->message ) ) {
         $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
         $client->sendMessage( '-1001432760770', $storage['message'] );
 
-        unset( $storage );
+        $storage = [];
 
       }
 
@@ -156,7 +156,7 @@ if ( isset( $update->message ) ) {
         'Публикация поста была отменена, чтобы создать новый пост введите команду /create'
       );
 
-      unset( $storage['message'] );
+      $storage = [];
 
     }
 
