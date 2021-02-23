@@ -60,15 +60,18 @@ if ( isset( $update->message ) ) {
 
           $text = [];
 
-          $text[] = "[​​​​​​​​​​​]({$item['image']}) {$item['description']}" . PHP_EOL;
+          $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
           $text[] = "Цена - [{$item['price']}]({$item['url']})";
           $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказа(ов)";
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
 
           $storage['ready']['text'] = implode( PHP_EOL, $text );
           $storage['ready']['buttons'] = [
-            [ [ "text" => "👍", "callback_data" => "like" ], [ "text" => "👎", "callback_data" => "dislike" ] ],
-            [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ],
+            'inline_keyboard' =>
+            [
+              [ [ "text" => "👍", "callback_data" => "like" ], [ "text" => "👎", "callback_data" => "dislike" ] ],
+              [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
+            ]
           ];
 
           $a = $client->sendMessage(
