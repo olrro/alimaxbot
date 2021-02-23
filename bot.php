@@ -17,13 +17,13 @@ if ( !$storage = @json_decode( $redis->get( 'storage' ), 1 ) ){
 }
 
 $client = new Client( $_GET["api"] );
-$update = $client->getUpdate();
+$update = json_decode( json_encode( $client->getUpdate() ), 1 );
 
-if ( isset( $update->message ) ) {
+if ( isset( $update['message'] ) ) {
 
-    $chat_id = $client->easy->chat_id;
-    $message_id = $client->easy->message_id;
-    $text = $client->easy->text;
+    $chat_id = $client['easy']['chat_id'];
+    $message_id = $client['easy']['message_id'];
+    $text = $client['easy']['text'];
 
     $client->debug( $storage );
 
@@ -169,33 +169,34 @@ if ( isset( $update->message ) ) {
 
 }
 
-if ( isset( $update->callback_query ) ) {
+if ( isset( $update['callback_query'] ) ) {
 
-    $id = $update->callback_query->id;
-    $chat_id = $update->callback_query->message->chat->id;
+    $id = $update['callback_query']['id'];
+    $chat_id = $update['callback_query']['message']['chat']['id'];
+    $text = $client['easy']['text'];
 
-    $message_id = $update->callback_query->message->message_id;
-    $buttons = json_decode( json_encode( $update->callback_query->message->reply_markup ), 1 );
+    $message_id = $update['callback_query']['message']['message_id'];
+    $buttons = $update['callback_query']['message']['reply_markup']['inline_keyboard'];
 
-    $likes = intval( str_replace( '👍', '', $buttons['inline_keyboard'][0][0]['text'] ) );
-    $dislikes = intval( str_replace( '👎', '', $buttons['inline_keyboard'][0][1]['text'] ) );
+    $likes = intval( str_replace( '👍', '', $buttons[0][0]['text'] ) );
+    $dislikes = intval( str_replace( '👎', '', $buttons[0][1]['text'] ) );
 
-    if ( $update->callback_query->data == "like" ) {
+    if ( $update['callback_query']['data'] == "like" ) {
 
-      $buttons['inline_keyboard'][0][0]['text'] = '👍' . $likes + 1;
+      $buttons[0][0]['text'] = '👍' . $likes + 1;
 
-    } elseif ( $update->callback_query->data == "dislike" ) {
+    } elseif ( $update['callback_query']['data'] == "dislike" ) {
 
-      $buttons['inline_keyboard'][0][1]['text'] = '👎' . $likes + 1;
+      $buttons[0][1]['text'] = '👎' . $dislikes + 1;
 
     }
 
     $client->answerCallbackQuery( $id, "Рейтинг был успешно изменен!" );
 
     $client->editMessageText(
-      $chat_id, $message_id, null, $update->callback_query->message->text,
-      null, $update->callback_query->message->entities, null,
-      $buttons
+      $chat_id, $message_id, null, $text,
+      null, $update['callback_query']['message']['entities'], null,
+      [ 'inline_keyboard' => $buttons ]
     );
 
 }
