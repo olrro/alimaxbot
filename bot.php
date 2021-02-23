@@ -128,11 +128,13 @@ if ( isset( $update->message ) ) {
 
           $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
 
-          $client->sendMessage(
+          $a = $client->sendMessage(
             '-1001432760770', $storage['ready']['text'], 'markdown',
             null, null, null, null, null,
             $storage['ready']['buttons']
           );
+
+          $client->debug( $chat_id, $a );
 
           unset( $storage['ready'] );
 
