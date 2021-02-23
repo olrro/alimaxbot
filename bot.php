@@ -21,13 +21,11 @@ $update = json_decode( json_encode( $client->getUpdate() ), 1 );
 
 if ( isset( $update['message'] ) ) {
 
-    $chat_id = $client['easy']['chat_id'];
-    $message_id = $client['easy']['message_id'];
-    $text = $client['easy']['text'];
+    $chat_id = $client->easy->chat_id;
+    $message_id = $client->easy->message_id;
+    $text = $client->easy->text;
 
-    $client->debug( $storage );
-
-    switch ( true ) {
+    switch ( 1 ) {
 
       case ( $storage['section'] === 'create' AND !isset( $storage['ready'] ) ):
 
@@ -171,21 +169,22 @@ if ( isset( $update['message'] ) ) {
 
 if ( isset( $update['callback_query'] ) ) {
 
-    $id = $update['callback_query']['id'];
-    $chat_id = $update['callback_query']['message']['chat']['id'];
-    $text = $client['easy']['text'];
+    $update = $update['callback_query'];
+    $message = $update['message'];
 
-    $message_id = $update['callback_query']['message']['message_id'];
-    $buttons = $update['callback_query']['message']['reply_markup']['inline_keyboard'];
+    $id = $update['id'];
+    $chat_id = $message['chat']['id'];
+    $message_id = $message['message_id'];
+    $buttons = $message['reply_markup']['inline_keyboard'];
 
     $likes = intval( str_replace( '👍', '', $buttons[0][0]['text'] ) );
     $dislikes = intval( str_replace( '👎', '', $buttons[0][1]['text'] ) );
 
-    if ( $update['callback_query']['data'] == "like" ) {
+    if ( $update['data'] == "like" ) {
 
       $buttons[0][0]['text'] = '👍' . $likes + 1;
 
-    } elseif ( $update['callback_query']['data'] == "dislike" ) {
+    } elseif ( $update['data'] == "dislike" ) {
 
       $buttons[0][1]['text'] = '👎' . $dislikes + 1;
 
@@ -194,8 +193,8 @@ if ( isset( $update['callback_query'] ) ) {
     $client->answerCallbackQuery( $id, "Рейтинг был успешно изменен!" );
 
     $client->editMessageText(
-      $chat_id, $message_id, null, $text,
-      null, $update['callback_query']['message']['entities'], null,
+      $chat_id, $message_id, null, $message['text'],
+      null, $update['message']['entities'], null,
       [ 'inline_keyboard' => $buttons ]
     );
 
