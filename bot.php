@@ -45,7 +45,8 @@ if ( isset( $update['message'] ) ) {
             '"totalValidNum":(.*),' => 'reviews',
             '"formatTradeCount":"(.*)",' => 'orders',
             '"averageStar":"(.*)",' => 'rating',
-            '"formatedAmount":"(.*)",' => 'price'
+            '"formatedAmount":"(.*)",' => 'price',
+            '"discount":(.*),' => 'discount',
           ];
 
 
@@ -60,6 +61,9 @@ if ( isset( $update['message'] ) ) {
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
           $text[] = "Цена - [{$item['price']}]({$item['url']})";
+
+          if ( isset( $item['discount'] ) )
+          $text[] = "Скидка - имеется ([{$item['discount']}]({$item['url']}))";
 
           $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказа(ов)";
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
