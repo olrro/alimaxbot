@@ -128,26 +128,16 @@ if ( isset( $update->message ) ) {
 
           $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
 
-          $a = $client->sendMessage(
+          $client->sendMessage(
             '-1001432760770', $storage['ready']['text'], 'markdown',
             null, null, null, null, null,
             $storage['ready']['buttons']
           );
 
-          if ( $a->ok ) {
-
-            $storage['posts'][$a->result->message_id] = [
-              'text' => $storage['ready']['text'],
-              'buttons' => $storage['ready']['buttons'],
-              'date' => $a->result->date
-            ];
-
-          }
-          else {
-
-            $client->sendMessage( $chat_id, 'Не удалось отправить пост' );
-
-          }
+          $storage['posts'][] = [
+            'text' => $storage['ready']['text'],
+            'buttons' => $storage['ready']['buttons']
+          ];
 
           unset( $storage['ready'] );
 
@@ -185,30 +175,26 @@ if ( isset( $update->callback_query ) ) {
     $chat_id = $update->callback_query->message->chat->id;
     $message_id = $update->callback_query->message->message_id;
 
-    $client->debug( $chat_id, $update );
+    $likes = intval( str_replace( '👍', '', $update->callback_query->message->reply_markup->inline_keyboard[0][0] ) );
+    $dislikes = intval( str_replace( '👎', '', $update->callback_query->message->reply_markup->inline_keyboard[0][1] ) );
 
     if ( $update->callback_query->data == "like" ) {
 
+      $update->callback_query->message->reply_markup->inline_keyboard[0][0] = '👍' . $likes + 1;
+
     } elseif ( $update->callback_query->data == "dislike" ) {
+
+      $update->callback_query->message->reply_markup->inline_keyboard[0][1] = '👎' . $likes + 1;
 
     }
 
-  /*  $menu["inline_keyboard"] = [
-        [
-          [ "text" => "👍 {$storage['likes'][$message_id]}", "callback_data" => "like" ],
-          [ "text" => "👎 {$storage['dislikes'][$message_id]}", "callback_data" => "dislike" ],
-        ],
-        [
-          [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ],
-        ],
-    ];
-
     $client->answerCallbackQuery( $id, "Рейтинг был успешно изменен!" );
+
     $client->editMessageText(
-      $chat_id, $message_id, null, "Button 2",
-      null, null, null,
-      $menu
-    );*/
+      $chat_id, $message_id, null, $update->callback_query->message->text,
+      null, $update->callback_query->message->entities, null,
+      $update->callback_query->message->reply_markup
+    );
 
 }
 
