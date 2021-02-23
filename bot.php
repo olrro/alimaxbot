@@ -175,16 +175,16 @@ if ( isset( $update->callback_query ) ) {
     $chat_id = $update->callback_query->message->chat->id;
     $message_id = $update->callback_query->message->message_id;
 
-    $likes = intval( str_replace( '👍', '', $update->callback_query->message->reply_markup->inline_keyboard[0][0] ) );
-    $dislikes = intval( str_replace( '👎', '', $update->callback_query->message->reply_markup->inline_keyboard[0][1] ) );
+    $likes = intval( str_replace( '👍', '', $update->callback_query->message->reply_markup->inline_keyboard[0][0]['text'] ) );
+    $dislikes = intval( str_replace( '👎', '', $update->callback_query->message->reply_markup->inline_keyboard[0][1]['text'] ) );
 
     if ( $update->callback_query->data == "like" ) {
 
-      $update->callback_query->message->reply_markup->inline_keyboard[0][0] = '👍' . $likes + 1;
+      $update->callback_query->message->reply_markup->inline_keyboard[0][0]['text'] = '👍' . $likes + 1;
 
     } elseif ( $update->callback_query->data == "dislike" ) {
 
-      $update->callback_query->message->reply_markup->inline_keyboard[0][1] = '👎' . $likes + 1;
+      $update->callback_query->message->reply_markup->inline_keyboard[0][1]['text'] = '👎' . $likes + 1;
 
     }
 
