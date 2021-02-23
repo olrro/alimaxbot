@@ -134,7 +134,7 @@ if ( isset( $update->message ) ) {
             $storage['ready']['buttons']
           );
 
-          $storage = [];
+          unset( $storage['ready'] );
 
         }
 
@@ -147,7 +147,7 @@ if ( isset( $update->message ) ) {
           'Публикация поста была отменена, чтобы создать новый пост введите команду /create'
         );
 
-        $storage = [];
+        unset( $storage['ready'] );
 
       break;
 
