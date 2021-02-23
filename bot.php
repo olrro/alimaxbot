@@ -29,7 +29,7 @@ if ( isset( $update->message ) ) {
 
     switch ( true ) {
 
-      case ( 0 ):
+      case ( $storage['section'] === 'create' ):
 
         if ( preg_match( '/^([0-9]+) (.*){1,500}$/iU', $text, $description ) ) {
 
@@ -207,5 +207,5 @@ if ( isset( $update->callback_query ) ) {
 }
 
 if ( $storage = @json_encode( $storage ) ) {
-  $redis->set( 'storage', @json_encode( $storage ) );
+  $redis->set( 'storage', $storage );
 }
