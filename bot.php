@@ -178,11 +178,7 @@ if ( isset( $update['callback_query'] ) ) {
 
     if ( $update['data'] == "like" ) {
 
-      $buttons[0][0]['text'] = '👍 ' . ( intval( ltrim( $buttons[0][0]['text'], '👍' ) ) + 1 );
-
-    } elseif ( $update['data'] == "dislike" ) {
-
-      $buttons[0][1]['text'] = '👎 ' . ( intval( ltrim( $buttons[0][1]['text'], '👎' ) ) + 1 );
+      $buttons[0][0]['text'] = '❤️ ' . ( intval( ltrim( $buttons[0][0]['text'], '❤️' ) ) + 1 );
 
     }
 
