@@ -29,7 +29,7 @@ if ( isset( $update['message'] ) ) {
 
       case ( $storage['section'] == 'create' AND !isset( $storage['ready'] ) ):
 
-        if ( preg_match( '/^([0-9]{5,20}) ([a-z0-9\/\-.:]{3,255}) (.{1,500})$/sU', $text, $description ) ) {
+        if ( preg_match( '/^([0-9]{5,20}) ([a-z0-9\/\-.:]{3,255}) (.{1,500})$/s', $text, $description ) ) {
 
           $item = [];
 
@@ -73,7 +73,7 @@ if ( isset( $update['message'] ) ) {
             'inline_keyboard' =>
             [
               [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
-              [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
+              [ [ "text" => "Купить 🧨", "url" => $item['url'], ] ]
             ]
           ];
 
