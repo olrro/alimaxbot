@@ -29,15 +29,15 @@ if ( isset( $update['message'] ) ) {
 
       case ( $storage['section'] == 'create' AND !isset( $storage['ready'] ) ):
 
-        if ( preg_match( '/([0-9]{1,20}) (.{1,500})/s', $text, $description ) ) {
+        if ( preg_match( '/^([0-9]{5,20}) ([a-z0-9\/\-.:]{3,255}) (.{1,500})$/sU', $text, $description ) ) {
 
           $item = [];
 
           $item['id'] = $description['1'];
-          $item['description'] = $description['2'];
+          $item['url'] = $description['2'];
+          $item['description'] = $description['3'];
 
-          $item['url'] = 'https://aliexpress.ru/item/' . $item['id'] . '.html';
-          $item['html'] = @file_get_contents( $item['url'] );
+          $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
 
 
           $conditions = [
@@ -60,13 +60,13 @@ if ( isset( $update['message'] ) ) {
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "**Цена** - [{$item['price']} ₽]({$item['url']})";
+          $text[] = "Цена - [{$item['price']} ₽]({$item['url']})";
 
           if ( isset( $item['discount'] ) )
-          $text[] = "**Скидка** - имеется ([-{$item['discount']}%]({$item['url']}))";
+          $text[] = "Скидка - имеется ([-{$item['discount']}%]({$item['url']}))";
 
-          $text[] = "**Рейтинг** - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
-          $text[] = "**Отзывов** - [{$item['reviews']}]({$item['url']})";
+          $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
+          $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
 
           $storage['ready']['text'] = implode( PHP_EOL, $text );
           $storage['ready']['buttons'] = [
@@ -98,7 +98,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage(
             $chat_id,
-            'Чтобы создать новый пост введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+            'Чтобы создать новый пост введите идентификатор товара на Aliexpress, партнерскую ссылку и текст описания (например, 32914249002 http://alii.pub/5kqwi5 Новое классное зарядное устройство)'
           );
 
         }
@@ -107,10 +107,10 @@ if ( isset( $update['message'] ) ) {
 
       case ( $text === '/create' ):
 
-        $client->sendMessage(
-          $chat_id,
-          'Чтобы создать новый пост введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
-        );
+      $client->sendMessage(
+        $chat_id,
+        'Чтобы создать новый пост введите идентификатор товара на Aliexpress, партнерскую ссылку и текст описания (например, 32914249002 http://alii.pub/5kqwi5 Новое классное зарядное устройство)'
+      );
 
         $storage['section'] = 'create';
 
@@ -136,6 +136,7 @@ if ( isset( $update['message'] ) ) {
             $storage['ready']['buttons']
           );
 
+          unset( $storage['section'] );
           unset( $storage['ready'] );
 
         }
@@ -149,7 +150,17 @@ if ( isset( $update['message'] ) ) {
           'Публикация поста была отменена, чтобы создать новый пост введите команду /create'
         );
 
+        unset( $storage['section'] );
         unset( $storage['ready'] );
+
+      break;
+
+      case ( $text === '/start' ):
+
+        $client->sendMessage(
+          $chat_id,
+          'Привет, я бот который может публиковать пост на канале! Если ты администратор, то можешь вопспользоваться мной'
+        );
 
       break;
 
