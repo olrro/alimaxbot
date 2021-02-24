@@ -45,7 +45,7 @@ if ( isset( $update['message'] ) ) {
             '"totalValidNum":(.*),' => 'reviews',
             '"formatTradeCount":"(.*)",' => 'orders',
             '"averageStar":"(.*)",' => 'rating',
-            '"formatedAmount":"(.*)",' => 'price',
+            '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
             '"discount":(.*),' => 'discount',
           ];
 
@@ -60,10 +60,10 @@ if ( isset( $update['message'] ) ) {
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "Цена - [{$item['price']}]({$item['url']})";
+          $text[] = "Цена - [{$item['price']} ₽]({$item['url']})";
 
           if ( isset( $item['discount'] ) )
-          $text[] = "Скидка - имеется ([-{$item['discount']}]({$item['url']}))";
+          $text[] = "Скидка - имеется ([-{$item['discount']}%]({$item['url']}))";
 
           $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
@@ -72,7 +72,7 @@ if ( isset( $update['message'] ) ) {
           $storage['ready']['buttons'] = [
             'inline_keyboard' =>
             [
-              [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😻", "callback_data" => "emoji" ] ],
+              [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
               [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
             ]
           ];
@@ -182,7 +182,7 @@ if ( isset( $update['callback_query'] ) ) {
 
     } elseif ( $update['data'] == "emoji" ) {
 
-      $buttons[0][1]['text'] = '😻 ' . ( intval( ltrim( $buttons[0][1]['text'], '😻' ) ) + 1 );
+      $buttons[0][1]['text'] = '😜 ' . ( intval( ltrim( $buttons[0][1]['text'], '😜' ) ) + 1 );
 
     }
 
