@@ -28,7 +28,7 @@ if ( isset( $update['message'] ) ) {
     switch ( 1 ) {
 
       case ( $storage['section'] == 'create' AND !isset( $storage['ready'] ) ):
-$client->dialog( $chat_id, $update );
+$client->debug( $chat_id, $update );
         if ( preg_match( '/^([0-9]{5,20}) ([a-z0-9\/\-.:]{3,255}) (.{1,500})$/s', $text, $description ) ) {
 
           $item = [];
