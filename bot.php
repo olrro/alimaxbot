@@ -27,7 +27,7 @@ if ( isset( $update['message'] ) ) {
 
     switch ( 1 ) {
 
-      case ( $storage['section'] === 'create' AND !isset( $storage['ready'] ) ):
+      case ( $storage['section'] == 'create' AND !isset( $storage['ready'] ) ):
 
         if ( preg_match( '/([0-9]{1,20}) (.{1,500})/s', $text, $description ) ) {
 
@@ -53,26 +53,27 @@ if ( isset( $update['message'] ) ) {
           foreach ( $conditions as $regex => $name ) {
 
             preg_match( "/{$regex}/iU", $item['html'], $match );
-            if ( !empty( $match[1] ) ) $item[$name] = $match[1];
+            if ( !empty( $match[1] ) ) $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
 
           }
 
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "Цена - [{$item['price']} ₽]({$item['url']})";
+          $text[] = "**Цена** - [{$item['price']} ₽]({$item['url']})";
 
           if ( isset( $item['discount'] ) )
-          $text[] = "Скидка - имеется ([-{$item['discount']}%]({$item['url']}))";
+          $text[] = "**Скидка** - имеется ([-{$item['discount']}%]({$item['url']}))";
 
-          $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
-          $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
+          $text[] = "**Рейтинг** - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
+          $text[] = "**Отзывов** - [{$item['reviews']}]({$item['url']})";
 
           $storage['ready']['text'] = implode( PHP_EOL, $text );
           $storage['ready']['buttons'] = [
             'inline_keyboard' =>
             [
-              [ [ "text" => "🔥", "callback_data" => "finger" ], [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ],
+              [ [ "text" => "🔥", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
+              [ [ "text" => "Купить 🧨", "url" => "http://www.google.com/", ] ]
             ]
           ];
 
@@ -97,7 +98,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage(
             $chat_id,
-            'Чтобы создать новый пост введите идентификатор товара на [Aliexpress](https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+            'Чтобы создать новый пост введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
           );
 
         }
@@ -108,7 +109,7 @@ if ( isset( $update['message'] ) ) {
 
         $client->sendMessage(
           $chat_id,
-          'Чтобы создать новый пост введите идентификатор товара на [Aliexpress](https://aliexpress.ru/) и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+          'Чтобы создать новый пост введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
         );
 
         $storage['section'] = 'create';
