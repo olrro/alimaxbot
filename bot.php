@@ -29,60 +29,26 @@ if ( isset( $update['message'] ) ) {
 
       case ( $storage['section'] == 'create' AND !isset( $storage['ready'] ) ):
 
-        if ( preg_match( '/^([0-9]{5,20}) (.{1,500})$/sU', $text, $description ) ) {
+        if ( filter_var( $text, FILTER_VALIDATE_URL ) ) {
 
-          $item = [];
+          $storage['ready']['url'] = $text;
 
-          $item['id'] = $description['1'];
-          $item['description'] = $description['2'];
+          $client->sendMessage(
+            $chat_id,
+            'Ссылка успешно установлена'
+          );
 
-          $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
-
-          $conditions = [
-            '<meta property="og:image" content="(.*)"\/>' => 'image',
-            '"totalValidNum":(.*),' => 'reviews',
-            '"formatTradeCount":"(.*)",' => 'orders',
-            '"averageStar":"(.*)",' => 'rating',
-            '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
-            '"discount":(.*),' => 'discount',
-          ];
-
-
-          foreach ( $conditions as $regex => $name ) {
-
-            preg_match( "/{$regex}/iU", $item['html'], $match );
-            if ( !empty( $match[1] ) ) $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
-
-          }
-
-          $text = [];
-
-          $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "Цена - [{$item['price']} ₽]({$item['url']})";
-
-          if ( isset( $item['discount'] ) )
-          $text[] = "Скидка - имеется ([-{$item['discount']}%]({$item['url']}))";
-
-          $text[] = "Рейтинг - [{$item['rating']}]({$item['url']}) оценка / [{$item['orders']}]({$item['url']}) заказы";
-          $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
-
-          $storage['ready']['text'] = implode( PHP_EOL, $text );
-
-          $client->sendMessage( $chat_id, $storage['ready']['text'], 'markdown' );
-          $client->sendMessage( $chat_id, 'Так будет выглядеть пост, который будет отправлен на канал' );
-          $client->sendMessage( $chat_id, 'Чтобы продолжить введите команду /post, для отмены - /stop' );
+          $client->sendMessage(
+            $chat_id,
+            'Чтобы продолжить введите команду /post. Чтобы отменить создание -  /stop'
+          );
 
         }
         else {
 
           $client->sendMessage(
             $chat_id,
-            'Данные для поста отправлены в неправильной форме'
-          );
-
-          $client->sendMessage(
-            $chat_id,
-            'Чтобы создать новый пост введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+            'Введите партнерскую ссылку на товар (с которой будет начислен процент)'
           );
 
         }
@@ -91,10 +57,10 @@ if ( isset( $update['message'] ) ) {
 
       case ( $text === '/create' ):
 
-      $client->sendMessage(
-        $chat_id,
-        'Чтобы создать новый пост введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
-      );
+        $client->sendMessage(
+          $chat_id,
+          'Введите партнерскую ссылку на товар (с которой будет начислен процент)'
+        );
 
         $storage['section'] = 'create';
 
@@ -112,28 +78,57 @@ if ( isset( $update['message'] ) ) {
         }
         else {
 
-          if ( filter_var( $text, FILTER_VALIDATE_URL ) ) {
+          if ( preg_match( '/^([0-9]{5,20}) (.{1,500})$/sU', $text, $description ) ) {
 
-            $storage['ready']['url'] = $text;
+            $item = [];
 
-            $client->sendMessage(
-              $chat_id,
-              'Ссылка успешно установлена. Если вы хотите изменить ссылку - просто отправьте мне новую'
-            );
+            $item['id'] = $description['1'];
+            $item['description'] = $description['2'];
 
-            $client->sendMessage(
-              $chat_id,
-              'Чтобы отправить пост на канал, введите команду /post. Чтобы отменить отправку -  /stop'
-            );
+            $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
+
+            $conditions = [
+              '<meta property="og:image" content="(.*)"\/>' => 'image',
+              '"totalValidNum":(.*),' => 'reviews',
+              '"formatTradeCount":"(.*)",' => 'orders',
+              '"averageStar":"(.*)",' => 'rating',
+              '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
+              '"discount":(.*),' => 'discount',
+            ];
+
+
+            foreach ( $conditions as $regex => $name ) {
+
+              preg_match( "/{$regex}/iU", $item['html'], $match );
+              if ( !empty( $match[1] ) ) $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
+
+            }
+
+            $text = [];
+
+            $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
+            $text[] = "Цена - [{$item['price']} ₽]({$storage['ready']['url']})";
+
+            if ( isset( $item['discount'] ) )
+            $text[] = "Скидка - имеется ([-{$item['discount']}%]({$storage['ready']['url']}))";
+
+            $text[] = "Рейтинг - [{$item['rating']}]({$storage['ready']['url']}) оценка / [{$item['orders']}]({$storage['ready']['url']}) заказы";
+            $text[] = "Отзывов - [{$item['reviews']}]({$storage['ready']['url']})";
+
+            $storage['ready']['text'] = implode( PHP_EOL, $text );
+
+            $client->sendMessage( $chat_id, $storage['ready']['text'], 'markdown' );
+            $client->sendMessage( $chat_id, 'Так будет выглядеть пост, который будет отправлен на канал' );
+            $client->sendMessage( $chat_id, 'Чтобы отправить пост введите команду /post, для отмены - /stop' );
 
           }
           else {
 
-            if ( empty( $storage['ready']['url'] ) ) {
+            if ( empty( $storage['ready']['text'] ) ) {
 
               $client->sendMessage(
                 $chat_id,
-                'Введите партнерскую ссылку на товар (с которой будет начислен процент)'
+                'Введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
               );
 
             }
