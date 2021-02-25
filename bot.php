@@ -3,20 +3,15 @@
 use TuriBot\Client;
 
 require_once __DIR__ . "/vendor/autoload.php";
-
-if ( !isset( $_GET["api"] ) ) {
-  exit();
-}
+require_once __DIR__ . "/config.php";
 
 Predis\Autoloader::register();
-
 $redis = new Predis\Client( $_ENV['REDIS_URL'] );
 
-if ( !$storage = @json_decode( $redis->get( 'storage' ), 1 ) ){
-  $storage = [ 'section' => '' ];
-}
+if ( !$storage = @json_decode( $redis->get( 'storage' ), 1 ) )
+$storage = [ 'section' => '' ];
 
-$client = new Client( $_GET["api"] );
+$client = new Client( $config['token'] );
 $update = json_decode( json_encode( $client->getUpdate() ), 1 );
 
 if ( isset( $update['message'] ) ) {
