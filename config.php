@@ -10,6 +10,6 @@ $config['params'] = [
   '"totalValidNum":(.*),' => 'reviews',
   '"formatTradeCount":"(.*)",' => 'orders',
   '"averageStar":"(.*)",' => 'rating',
-  '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
+  'totalValue: "(.*)"' => 'price',
   '"discount":(.*),' => 'discount',
 ];
