@@ -70,11 +70,16 @@ if ( isset( $update['message'] ) ) {
             '"discount":(.*),' => 'discount',
           ];
 
-
           foreach ( $conditions as $regex => $name ) {
 
             preg_match( "/{$regex}/iU", $item['html'], $match );
-            if ( !empty( $match[1] ) ) $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
+
+            if ( empty( $match[1] ) AND $name != 'discount' ){
+              $client->sendMessage( $chat_id, 'Товара по ссылке не существует, либо отсутствуют необходимые параметры' );
+              exit();
+            }
+
+            $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
 
           }
 
