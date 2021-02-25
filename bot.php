@@ -40,7 +40,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage(
             $chat_id,
-            'Чтобы продолжить введите команду /next. Чтобы отменить создание -  /stop'
+            'Чтобы продолжить введите команду /post. Чтобы отменить создание -  /stop'
           );
 
         }
@@ -55,18 +55,7 @@ if ( isset( $update['message'] ) ) {
 
       break;
 
-      case ( $text === '/create' ):
-
-        $client->sendMessage(
-          $chat_id,
-          'Введите партнерскую ссылку на товар (с которой будет начислен процент)'
-        );
-
-        $storage['section'] = 'create';
-
-      break;
-
-      case ( $text === '/next' AND isset( $storage['ready'] ) ):
+      case ( isset( $storage['ready'] ) AND $text != '/post' AND $text != '/stop' ):
 
         if ( preg_match( '/^([0-9]{5,20}) (.{1,500})$/sU', $text, $description ) ) {
 
@@ -109,41 +98,49 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage( $chat_id, $storage['ready']['text'], 'markdown' );
           $client->sendMessage( $chat_id, 'Так будет выглядеть пост, который будет отправлен на канал' );
-          $client->sendMessage( $chat_id, 'Чтобы отправить пост введите команду /next, для отмены - /stop' );
+          $client->sendMessage( $chat_id, 'Чтобы отправить пост введите команду /post, для отмены - /stop' );
 
         }
         else {
 
-          if ( empty( $storage['ready']['text'] ) ) {
-
-            $client->sendMessage(
-              $chat_id,
-              'Введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
-            );
-
-          }
-          else {
-
-            $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
-
-            $client->sendMessage(
-              '-1001432760770', $storage['ready']['text'], 'markdown',
-              null, null, null, null, null,
-              [
-                'inline_keyboard' =>
-                [
-                  [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
-                  [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
-                ]
-              ]
-            );
-
-            unset( $storage['section'] );
-            unset( $storage['ready'] );
-
-          }
+          $client->sendMessage(
+            $chat_id,
+            'Введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+          );
 
         }
+
+      break;
+
+      case ( $text === '/create' ):
+
+        $client->sendMessage(
+          $chat_id,
+          'Введите партнерскую ссылку на товар (с которой будет начислен процент)'
+        );
+
+        $storage['section'] = 'create';
+
+      break;
+
+      case ( $text === '/post' ):
+
+        $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
+
+        $client->sendMessage(
+          '-1001432760770', $storage['ready']['text'], 'markdown',
+          null, null, null, null, null,
+          [
+            'inline_keyboard' =>
+            [
+              [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
+              [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
+            ]
+          ]
+        );
+
+        unset( $storage['section'] );
+        unset( $storage['ready'] );
 
       break;
 
