@@ -70,7 +70,7 @@ if ( isset( $update['message'] ) ) {
               exit();
             }
 
-            $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
+            $item[$name] = ( $name == 'price' ) ? intval( trim( $match[1] ) ) : $match[1];
 
           }
 
@@ -193,11 +193,11 @@ if ( isset( $update['callback_query'] ) ) {
 
     if ( $update['data'] == "finger" ) {
 
-      $buttons[0][0]['text'] = '👍 ' . ( intval( mb_substr( $buttons[0][0]['text'], 1, 1 ) ) + 1 );
+      $buttons[0][0]['text'] = '👍 ' . ( intval( ltrim( $buttons[0][0]['text'], '👍' ) ) + 1 );
 
     } elseif ( $update['data'] == "emoji" ) {
 
-      $buttons[0][1]['text'] = '😜 ' . ( intval( mb_substr( $buttons[0][1]['text'], 1, 1 ) ) + 1 );
+      $buttons[0][1]['text'] = '😜 ' . ( intval( ltrim( $buttons[0][1]['text'], '😜' ) ) + 1 );
 
     }
 
