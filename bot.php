@@ -40,7 +40,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage(
             $chat_id,
-            'Чтобы продолжить введите команду /post. Чтобы отменить создание -  /stop'
+            'Чтобы продолжить - введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
           );
 
         }
@@ -125,22 +125,34 @@ if ( isset( $update['message'] ) ) {
 
       case ( $text === '/post' ):
 
-        $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
+        if ( isset( $storage['ready']['text'] ) ) {
 
-        $client->sendMessage(
-          '-1001432760770', $storage['ready']['text'], 'markdown',
-          null, null, null, null, null,
-          [
-            'inline_keyboard' =>
+          $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
+
+          $client->sendMessage(
+            '-1001432760770', $storage['ready']['text'], 'markdown',
+            null, null, null, null, null,
             [
-              [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
-              [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
+              'inline_keyboard' =>
+              [
+                [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
+                [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
+              ]
             ]
-          ]
-        );
+          );
 
-        unset( $storage['section'] );
-        unset( $storage['ready'] );
+          unset( $storage['section'] );
+          unset( $storage['ready'] );
+
+        }
+        else {
+
+          $client->sendMessage(
+            $chat_id,
+            'Вы еще не закончили создание поста. Пожалуйста, выполните все шаги'
+          );
+
+        }
 
       break;
 
