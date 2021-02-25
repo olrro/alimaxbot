@@ -28,14 +28,13 @@ if ( isset( $update['message'] ) ) {
     switch ( 1 ) {
 
       case ( $storage['section'] == 'create' AND !isset( $storage['ready'] ) ):
-$client->debug( $chat_id, $update );
-        if ( preg_match( '/^([0-9]{5,20}) ([a-z0-9\/\-.:]{3,255}) (.{1,500})$/s', $text, $description ) ) {
+
+        if ( preg_match( '/^([0-9]{5,20}) (.{1,500})$/sU', $text, $description ) ) {
 
           $item = [];
 
           $item['id'] = $description['1'];
-          $item['url'] = $description['2'];
-          $item['description'] = $description['3'];
+          $item['description'] = $description['2'];
 
           $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
 
@@ -68,24 +67,10 @@ $client->debug( $chat_id, $update );
           $text[] = "Отзывов - [{$item['reviews']}]({$item['url']})";
 
           $storage['ready']['text'] = implode( PHP_EOL, $text );
-          $storage['ready']['buttons'] = [
-            'inline_keyboard' =>
-            [
-              [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
-              [ [ "text" => "Купить 🧨", "url" => $item['url'], ] ]
-            ]
-          ];
 
-          $client->sendMessage(
-            $chat_id, $storage['ready']['text'], 'markdown',
-            null, null, null, null, null,
-            $storage['ready']['buttons']
-          );
-
-          $client->sendMessage(
-            $chat_id,
-            'Так будет выглядеть пост, который будет отправлен на канал, чтобы продолжить введите команду /post, для отмены - /stop'
-          );
+          $client->sendMessage( $chat_id, $storage['ready']['text'], 'markdown' );
+          $client->sendMessage( $chat_id, 'Так будет выглядеть пост, который будет отправлен на канал' );
+          $client->sendMessage( $chat_id, 'Чтобы продолжить введите команду /post, для отмены - /stop' );
 
         }
         else {
@@ -127,16 +112,53 @@ $client->debug( $chat_id, $update );
         }
         else {
 
-          $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
+          if ( filter_var( $text, FILTER_VALIDATE_URL ) ) {
 
-          $client->sendMessage(
-            '-1001432760770', $storage['ready']['text'], 'markdown',
-            null, null, null, null, null,
-            $storage['ready']['buttons']
-          );
+            $storage['ready']['url'] = $text;
 
-          unset( $storage['section'] );
-          unset( $storage['ready'] );
+            $client->sendMessage(
+              $chat_id,
+              'Ссылка успешно установлена. Если вы хотите изменить ссылку - просто отправьте мне новую'
+            );
+
+            $client->sendMessage(
+              $chat_id,
+              'Чтобы отправить пост на канал, введите команду /post. Чтобы отменить отправку -  /stop'
+            );
+
+          }
+          else {
+
+            if ( empty( $storage['ready']['url'] ) ) {
+
+              $client->sendMessage(
+                $chat_id,
+                'Введите партнерскую ссылку на товар (с которой будет начислен процент)'
+              );
+
+            }
+            else {
+
+              $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
+
+              $client->sendMessage(
+                '-1001432760770', $storage['ready']['text'], 'markdown',
+                null, null, null, null, null,
+                [
+                  'inline_keyboard' =>
+                  [
+                    [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
+                    [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
+                  ]
+                ]
+              );
+
+              unset( $storage['section'] );
+              unset( $storage['ready'] );
+
+            }
+
+          }
 
         }
 
