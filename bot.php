@@ -61,16 +61,7 @@ if ( isset( $update['message'] ) ) {
 
           $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
 
-          $conditions = [
-            '<meta property="og:image" content="(.*)"\/>' => 'image',
-            '"totalValidNum":(.*),' => 'reviews',
-            '"formatTradeCount":"(.*)",' => 'orders',
-            '"averageStar":"(.*)",' => 'rating',
-            '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
-            '"discount":(.*),' => 'discount',
-          ];
-
-          foreach ( $conditions as $regex => $name ) {
+          foreach ( $config['params'] as $regex => $name ) {
 
             preg_match( "/{$regex}/iU", $item['html'], $match );
 
