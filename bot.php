@@ -40,7 +40,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage(
             $chat_id,
-            'Чтобы продолжить введите команду /post. Чтобы отменить создание -  /stop'
+            'Чтобы продолжить введите команду /next. Чтобы отменить создание -  /stop'
           );
 
         }
@@ -66,92 +66,80 @@ if ( isset( $update['message'] ) ) {
 
       break;
 
-      case ( $text === '/post' ):
+      case ( $text === '/next' AND isset( $storage['ready'] ) ):
 
-        if ( empty( $storage['ready'] ) ) {
+        if ( preg_match( '/^([0-9]{5,20}) (.{1,500})$/sU', $text, $description ) ) {
 
-          $client->sendMessage(
-            $chat_id,
-            'Внимание, ваш пост еще не готов. Введите команду /create, чтобы создать новую запись'
-          );
+          $item = [];
+
+          $item['id'] = $description['1'];
+          $item['description'] = $description['2'];
+
+          $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
+
+          $conditions = [
+            '<meta property="og:image" content="(.*)"\/>' => 'image',
+            '"totalValidNum":(.*),' => 'reviews',
+            '"formatTradeCount":"(.*)",' => 'orders',
+            '"averageStar":"(.*)",' => 'rating',
+            '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
+            '"discount":(.*),' => 'discount',
+          ];
+
+
+          foreach ( $conditions as $regex => $name ) {
+
+            preg_match( "/{$regex}/iU", $item['html'], $match );
+            if ( !empty( $match[1] ) ) $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
+
+          }
+
+          $text = [];
+
+          $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
+          $text[] = "Цена - [{$item['price']} ₽]({$storage['ready']['url']})";
+
+          if ( isset( $item['discount'] ) )
+          $text[] = "Скидка - имеется ([-{$item['discount']}%]({$storage['ready']['url']}))";
+
+          $text[] = "Рейтинг - [{$item['rating']}]({$storage['ready']['url']}) оценка / [{$item['orders']}]({$storage['ready']['url']}) заказы";
+          $text[] = "Отзывов - [{$item['reviews']}]({$storage['ready']['url']})";
+
+          $storage['ready']['text'] = implode( PHP_EOL, $text );
+
+          $client->sendMessage( $chat_id, $storage['ready']['text'], 'markdown' );
+          $client->sendMessage( $chat_id, 'Так будет выглядеть пост, который будет отправлен на канал' );
+          $client->sendMessage( $chat_id, 'Чтобы отправить пост введите команду /next, для отмены - /stop' );
 
         }
         else {
 
-          if ( preg_match( '/^([0-9]{5,20}) (.{1,500})$/sU', $text, $description ) ) {
+          if ( empty( $storage['ready']['text'] ) ) {
 
-            $item = [];
-
-            $item['id'] = $description['1'];
-            $item['description'] = $description['2'];
-
-            $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
-
-            $conditions = [
-              '<meta property="og:image" content="(.*)"\/>' => 'image',
-              '"totalValidNum":(.*),' => 'reviews',
-              '"formatTradeCount":"(.*)",' => 'orders',
-              '"averageStar":"(.*)",' => 'rating',
-              '"actSkuMultiCurrencyDisplayPrice":"(.*)",' => 'price',
-              '"discount":(.*),' => 'discount',
-            ];
-
-
-            foreach ( $conditions as $regex => $name ) {
-
-              preg_match( "/{$regex}/iU", $item['html'], $match );
-              if ( !empty( $match[1] ) ) $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
-
-            }
-
-            $text = [];
-
-            $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-            $text[] = "Цена - [{$item['price']} ₽]({$storage['ready']['url']})";
-
-            if ( isset( $item['discount'] ) )
-            $text[] = "Скидка - имеется ([-{$item['discount']}%]({$storage['ready']['url']}))";
-
-            $text[] = "Рейтинг - [{$item['rating']}]({$storage['ready']['url']}) оценка / [{$item['orders']}]({$storage['ready']['url']}) заказы";
-            $text[] = "Отзывов - [{$item['reviews']}]({$storage['ready']['url']})";
-
-            $storage['ready']['text'] = implode( PHP_EOL, $text );
-
-            $client->sendMessage( $chat_id, $storage['ready']['text'], 'markdown' );
-            $client->sendMessage( $chat_id, 'Так будет выглядеть пост, который будет отправлен на канал' );
-            $client->sendMessage( $chat_id, 'Чтобы отправить пост введите команду /post, для отмены - /stop' );
+            $client->sendMessage(
+              $chat_id,
+              'Введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+            );
 
           }
           else {
 
-            if ( empty( $storage['ready']['text'] ) ) {
+            $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
 
-              $client->sendMessage(
-                $chat_id,
-                'Введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
-              );
-
-            }
-            else {
-
-              $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
-
-              $client->sendMessage(
-                '-1001432760770', $storage['ready']['text'], 'markdown',
-                null, null, null, null, null,
+            $client->sendMessage(
+              '-1001432760770', $storage['ready']['text'], 'markdown',
+              null, null, null, null, null,
+              [
+                'inline_keyboard' =>
                 [
-                  'inline_keyboard' =>
-                  [
-                    [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
-                    [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
-                  ]
+                  [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
+                  [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
                 ]
-              );
+              ]
+            );
 
-              unset( $storage['section'] );
-              unset( $storage['ready'] );
-
-            }
+            unset( $storage['section'] );
+            unset( $storage['ready'] );
 
           }
 
