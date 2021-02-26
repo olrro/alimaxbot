@@ -14,4 +14,4 @@ $config['params'] = [
   '"discount":(.*),' => 'discount',
 ];
 
-$config['reactions'] = [ '👍', '😜' ];
+$config['react'] = [ '👍', '😜' ];
