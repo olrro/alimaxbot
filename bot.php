@@ -126,7 +126,7 @@ if ( isset( $update['message'] ) ) {
             [
               'inline_keyboard' =>
               [
-                [ [ "text" => "👍", "callback_data" => "finger" ], [ "text" => "😜", "callback_data" => "emoji" ] ],
+                [ [ "text" => $config['react'][0], "callback_data" => "finger" ], [ "text" => $config['react'][1], "callback_data" => "emoji" ] ],
                 [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
               ]
             ]
@@ -193,11 +193,11 @@ if ( isset( $update['callback_query'] ) ) {
 
     if ( $update['data'] == "finger" ) {
 
-      $buttons[0][0]['text'] = '👍 ' . ( intval( ltrim( $buttons[0][0]['text'], '👍' ) ) + 1 );
+      $buttons[0][0]['text'] = $config['react'][0] . ' ' . ( intval( ltrim( $buttons[0][0]['text'], $config['react'][0] ) ) + 1 );
 
     } elseif ( $update['data'] == "emoji" ) {
 
-      $buttons[0][1]['text'] = '😜 ' . ( intval( ltrim( $buttons[0][1]['text'], '😜' ) ) + 1 );
+      $buttons[0][1]['text'] = $config['react'][1] . ' ' . ( intval( ltrim( $buttons[0][1]['text'], $config['react'][1] ) ) + 1 );
 
     }
 
