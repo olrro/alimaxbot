@@ -70,7 +70,7 @@ if ( isset( $update['message'] ) ) {
               exit();
             }
 
-            $item[$name] = ( $name == 'price' ) ? 'trim( $match[1] )' : $match[1];
+            $item[$name] = ( $name == 'price' ) ? intval( $match[1] ) : $match[1];
 
           }
 
