@@ -202,6 +202,11 @@ if ( isset( $update['callback_query'] ) ) {
         $client->answerCallbackQuery( $id, 'Спасибо! Вы изменили рейтинг' );
 
       }
+      else {
+
+        $client->answerCallbackQuery( $id, 'Вы уже проголосовали' );
+
+      }
 
     } elseif ( $update['data'] == "emoji" ) {
 
@@ -213,14 +218,19 @@ if ( isset( $update['callback_query'] ) ) {
         $client->answerCallbackQuery( $id, 'Рейтинг был успешно изменен!' );
 
       }
+      else {
+
+        $client->answerCallbackQuery( $id, 'Вы уже проголосовали' );
+
+      }
+
+      $client->editMessageText(
+        $chat_id, $message_id, null, $message['text'],
+        null, $update['message']['entities'], null,
+        [ 'inline_keyboard' => $buttons ]
+      );
 
     }
-
-    $client->editMessageText(
-      $chat_id, $message_id, null, $message['text'],
-      null, $update['message']['entities'], null,
-      [ 'inline_keyboard' => $buttons ]
-    );
 
 }
 
