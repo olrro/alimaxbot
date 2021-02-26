@@ -10,7 +10,7 @@ $config['params'] = [
   '"totalValidNum":(.*),' => 'reviews',
   '"formatTradeCount":"(.*)",' => 'orders',
   '"averageStar":"(.*)",' => 'rating',
-  '"freightExt":"{\\\"p1\\":\\\"(.*)\\\",' => 'price',
+  '"freightExt":"{\\\"p1\\\":\\\"(.*)\\\",' => 'price',
   '"discount":(.*),' => 'discount',
 ];
 
