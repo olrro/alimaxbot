@@ -187,21 +187,34 @@ if ( isset( $update['callback_query'] ) ) {
     $message = $update['message'];
 
     $id = $update['id'];
+    $user_id = $message['from']['id'];
     $chat_id = $message['chat']['id'];
     $message_id = $message['message_id'];
     $buttons = $message['reply_markup']['inline_keyboard'];
 
     if ( $update['data'] == "finger" ) {
 
-      $buttons[0][0]['text'] = $config['react'][0] . ' ' . ( intval( ltrim( $buttons[0][0]['text'], $config['react'][0] ) ) + 1 );
+      if ( !isset( $storage['rating']['finger'][$user_id][$message_id] ) ) {
+
+        $buttons[0][0]['text'] = $config['react'][0] . ' ' . ( intval( ltrim( $buttons[0][0]['text'], $config['react'][0] ) ) + 1 );
+        $storage['rating']['finger'][$user_id][$message_id] = time();
+
+        $client->answerCallbackQuery( $id, 'Спасибо! Вы изменили рейтинг' );
+
+      }
 
     } elseif ( $update['data'] == "emoji" ) {
 
-      $buttons[0][1]['text'] = $config['react'][1] . ' ' . ( intval( ltrim( $buttons[0][1]['text'], $config['react'][1] ) ) + 1 );
+      if ( !isset( $storage['rating']['emoji'][$user_id][$message_id] ) ) {
+
+        $buttons[0][1]['text'] = $config['react'][1] . ' ' . ( intval( ltrim( $buttons[0][1]['text'], $config['react'][1] ) ) + 1 );
+        $storage['rating']['emoji'][$user_id][$message_id] = time();
+
+        $client->answerCallbackQuery( $id, 'Рейтинг был успешно изменен!' );
+
+      }
 
     }
-
-    $client->answerCallbackQuery( $id, "Рейтинг был успешно изменен!" );
 
     $client->editMessageText(
       $chat_id, $message_id, null, $message['text'],
