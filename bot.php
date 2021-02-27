@@ -183,7 +183,7 @@ if ( isset( $update['message'] ) ) {
 
           unset( $storage['section'] );
           unset( $storage['ready'] );
-
+awdw
         }
         else {
 
