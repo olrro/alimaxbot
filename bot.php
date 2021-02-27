@@ -194,6 +194,8 @@ if ( isset( $update['callback_query'] ) ) {
     $message_id = $message['message_id'];
     $buttons = $message['reply_markup']['inline_keyboard'];
 
+    $client->debug( $chat_id, $message );
+
     if ( $update['data'] == "finger" ) {
 
       if ( !isset( $storage['rating'][$user_id][$message_id] ) ) {
