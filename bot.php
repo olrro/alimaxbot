@@ -200,7 +200,7 @@ if ( isset( $update['message'] ) ) {
 
         $client->sendMessage(
           $chat_id,
-          'Действие было отменено'
+          'Действие было отменено'dwad
         );
 
         unset( $storage['section'] );
