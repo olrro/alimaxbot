@@ -59,7 +59,7 @@ if ( isset( $update['message'] ) ) {
           $item['id'] = $description['1'];
           $item['description'] = $description['2'];
 
-          $item['html'] = @file_get_contents( 'https://aliexpress.com/item/' . $item['id'] . '.html' );
+          $item['html'] = @file_get_contents( 'https://aliexpress.ru/item/' . $item['id'] . '.html' );
 
           foreach ( $config['params'] as $regex => $name ) {
 
