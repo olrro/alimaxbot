@@ -179,7 +179,7 @@ if ( isset( $update['message'] ) ) {
             ]
           );
 
-          $storage['posts'][$storage['ready']['url']] = $answer['result']['message_id'];
+          $storage['posts'][$storage['ready']['url']] = $answer->result->message_id;
 
           unset( $storage['section'] );
           unset( $storage['ready'] );
