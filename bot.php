@@ -109,15 +109,22 @@ if ( isset( $update['message'] ) ) {
 
           if ( isset( $storage['posts'][$text] ) ) {
 
-            $a = $client->forwardMessage(
+            $answer = $client->forwardMessage(
               $chat_id,
               '-1001432760770', null,
               $storage['posts'][$text]
             );
 
-            $client->debug( $chat_id, $a );
+            if ( !$answer->ok ) {
 
-            unset( $storage['section'] );
+              $client->sendMessage(
+                $chat_id,
+                'Поста с такой ссылкой не найдено, проверьте, что вы правильно указали адрес (например, протокол или / на конце)'
+              );
+
+              unset( $storage['posts'][$text] );
+
+            }
 
           }
           else {
@@ -215,16 +222,6 @@ if ( isset( $update['message'] ) ) {
         $client->sendMessage(
           $chat_id,
           'Привет, я бот который может публиковать посты на канале! Если ты администратор, то можешь воспользоваться мной'
-        );
-
-      break;
-
-      case ( $text === '/stat' ):
-
-        $client->sendMessage(
-          $chat_id,
-          'Общее количество ссылок - ' . count( $storage['posts'] ) . PHP_EOL .
-          'Активных пользователей - ' . count( $storage['rating'] )
         );
 
       break;
