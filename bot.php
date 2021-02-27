@@ -182,8 +182,8 @@ if ( isset( $update['message'] ) ) {
             [
               'inline_keyboard' =>
               [
-                [ [ "text" => $config['react'][0], "callback_data" => "finger" ], [ "text" => $config['react'][1], "callback_data" => "emoji" ] ],
-                [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ]
+                [ [ "text" => "Купить 🧨", "url" => $storage['ready']['url'], ] ],
+                [ [ "text" => $config['react'][0], "callback_data" => "finger" ], [ "text" => $config['react'][1], "callback_data" => "emoji" ] ]
               ]
             ]
           );
