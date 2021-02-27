@@ -70,6 +70,8 @@ if ( isset( $update['message'] ) ) {
               exit();
             }
 
+            $client->debug( $chat_id, $match );
+
             $item[$name] = $match[1];
 
           }
