@@ -19,6 +19,12 @@ if ( isset( $update['message'] ) ) {
     $chat_id = $client->easy->chat_id;
     $message_id = $client->easy->message_id;
     $text = $client->easy->text;
+    $user_id = $client->easy->from_id;
+
+    if ( $user_id != '1235529311' ) {
+      $client->sendMessage( $chat_id, 'Вы не являетесь администратором. Доступ запрещен' );
+      exit();
+    }
 
     switch ( 1 ) {
 
