@@ -77,12 +77,9 @@ if ( isset( $update['message'] ) ) {
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "В наличии - [{$item['quantity']} шт.]({$storage['ready']['url']})";
-
-          if ( isset( $item['discount'] ) )
-          $text[] = "Скидка - имеется ([-{$item['discount']}%]({$storage['ready']['url']}))";
 
           $text[] = "Рейтинг - [{$item['rating']}]({$storage['ready']['url']}) оценка / [{$item['orders']}]({$storage['ready']['url']}) заказы";
+          $text[] = "В наличии - [{$item['quantity']} шт.]({$storage['ready']['url']})";
           $text[] = "Отзывов - [{$item['reviews']}]({$storage['ready']['url']})";
 
           $storage['ready']['text'] = implode( PHP_EOL, $text );
