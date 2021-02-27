@@ -214,22 +214,22 @@ if ( isset( $update['callback_query'] ) ) {
 
       }
 
-      if ( isset( $voted ) ) {
+    }
 
-        $client->answerCallbackQuery( $id, 'Спасибо! Вы изменили рейтинг' );
+    if ( isset( $voted ) ) {
 
-        $client->editMessageText(
-          $chat_id, $message_id, null, $message['text'],
-          null, $update['message']['entities'], null,
-          [ 'inline_keyboard' => $buttons ]
-        );
+      $client->answerCallbackQuery( $id, 'Спасибо! Вы изменили рейтинг' );
 
-      }
-      else {
+      $client->editMessageText(
+        $chat_id, $message_id, null, $message['text'],
+        null, $update['message']['entities'], null,
+        [ 'inline_keyboard' => $buttons ]
+      );
 
-        $client->answerCallbackQuery( $id, 'Вы уже голосовали' );
+    }
+    else {
 
-      }
+      $client->answerCallbackQuery( $id, 'Вы уже голосовали' );
 
     }
 
