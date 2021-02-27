@@ -179,14 +179,7 @@ if ( isset( $update['message'] ) ) {
             ]
           );
 
-          try {
-
-            $storage['posts'][$storage['ready']['url']] = $answer['result']['message_id'];
-
-          } catch ( \Exception $e ) {
-            $client->sendMessage( $chat_id, $e->getMessage() );
-          }
-
+          $storage['posts'][$storage['ready']['url']] = $answer['result']['message_id'];
 
           unset( $storage['section'] );
           unset( $storage['ready'] );
