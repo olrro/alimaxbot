@@ -120,7 +120,7 @@ if ( isset( $update['message'] ) ) {
 
           $client->sendMessage( $chat_id, 'Ваш пост был успешно опубликован!' );
 
-          $a = $client->sendMessage(
+          $answer = $client->sendMessage(
             '-1001432760770', $storage['ready']['text'], 'markdown',
             null, null, null, null, null,
             [
@@ -132,7 +132,7 @@ if ( isset( $update['message'] ) ) {
             ]
           );
 
-          $client->debug( $chat_id, $a );
+          $storage['posts'][$answer['result']['message_id']] = $storage['ready']['url'];
 
           unset( $storage['section'] );
           unset( $storage['ready'] );
@@ -194,7 +194,7 @@ if ( isset( $update['callback_query'] ) ) {
     $message_id = $message['message_id'];
     $buttons = $message['reply_markup']['inline_keyboard'];
 
-    $client->debug( $chat_id, $message );
+    $client->debug( $chat_id, $update );
 
     if ( $update['data'] == "finger" ) {
 
