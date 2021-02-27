@@ -26,17 +26,29 @@ if ( isset( $update['message'] ) ) {
 
         if ( filter_var( $text, FILTER_VALIDATE_URL ) ) {
 
-          $storage['ready']['url'] = $text;
+          if ( !isset( $storage['posts'][$text] ) ) {
 
-          $client->sendMessage(
-            $chat_id,
-            'Ссылка успешно установлена'
-          );
+            $storage['ready']['url'] = $text;
 
-          $client->sendMessage(
-            $chat_id,
-            'Чтобы продолжить - введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
-          );
+            $client->sendMessage(
+              $chat_id,
+              'Ссылка успешно установлена'
+            );
+
+            $client->sendMessage(
+              $chat_id,
+              'Чтобы продолжить - введите идентификатор товара на Aliexpress и текст описания (например, 32914249002 Новое классное зарядное устройство)'
+            );
+
+          }
+          else {
+
+            $client->sendMessage(
+              $chat_id,
+              'Пост с такой ссылкой уже был опубликован ранее'
+            );
+
+          }
 
         }
         else {
