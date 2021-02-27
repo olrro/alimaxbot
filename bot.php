@@ -103,6 +103,53 @@ if ( isset( $update['message'] ) ) {
 
       break;
 
+      case ( $storage['section'] == 'search' AND $text != '/stop' ):
+
+        if ( filter_var( $text, FILTER_VALIDATE_URL ) ) {
+
+          if ( isset( $storage['posts'][$text] ) ) {
+
+            $client->forwardMessage(
+              $chat_id,
+              '-1001432760770', null,
+              $storage['posts'][$text]
+            );
+
+            unset( $storage['section'] );
+
+          }
+          else {
+
+            $client->sendMessage(
+              $chat_id,
+              'Поста с такой ссылкой не найдено, проверьте, что вы правильно указали адрес (например, протокол или / на конце)'
+            );
+
+          }
+
+        }
+        else {
+
+          $client->sendMessage(
+            $chat_id,
+            'Пожалуйста, отправьте партнерскую ссылку для поиска'
+          );
+
+        }
+
+      break;
+
+      case ( $text === '/search' ):
+
+        $client->sendMessage(
+          $chat_id,
+          'Введите партнерскую ссылку, чтобы найти связанную с ней публикацию на канале'
+        );
+
+        $storage['section'] = 'search';
+
+      break;
+
       case ( $text === '/create' ):
 
         $client->sendMessage(
@@ -132,7 +179,7 @@ if ( isset( $update['message'] ) ) {
             ]
           );
 
-          $storage['posts'][$answer['result']['message_id']] = $storage['ready']['url'];
+          $storage['posts'][$storage['ready']['url']] = $answer['result']['message_id'];
 
           unset( $storage['section'] );
           unset( $storage['ready'] );
@@ -153,7 +200,7 @@ if ( isset( $update['message'] ) ) {
 
         $client->sendMessage(
           $chat_id,
-          'Публикация поста была отменена, чтобы создать новый пост введите команду /create'
+          'Действие было отменено'
         );
 
         unset( $storage['section'] );
@@ -165,7 +212,17 @@ if ( isset( $update['message'] ) ) {
 
         $client->sendMessage(
           $chat_id,
-          'Привет, я бот который может публиковать пост на канале! Если ты администратор, то можешь воспользоваться мной'
+          'Привет, я бот который может публиковать посты на канале! Если ты администратор, то можешь воспользоваться мной'
+        );
+
+      break;
+
+      case ( $text === '/stat' ):
+
+        $client->sendMessage(
+          $chat_id,
+          'Общее количество ссылок - ' . count( $storage['posts'] ) . PHP_EOL .
+          'Активных пользователей - ' . count( $storage['rating'] )
         );
 
       break;
@@ -189,12 +246,11 @@ if ( isset( $update['callback_query'] ) ) {
     $message = $update['message'];
 
     $id = $update['id'];
-    $user_id = $message['from']['id'];
+    $user_id = $update['from']['id'];
+
     $chat_id = $message['chat']['id'];
     $message_id = $message['message_id'];
     $buttons = $message['reply_markup']['inline_keyboard'];
-
-    $client->debug( $chat_id, $update );
 
     if ( $update['data'] == "finger" ) {
 
