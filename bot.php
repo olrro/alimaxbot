@@ -65,7 +65,7 @@ if ( isset( $update['message'] ) ) {
 
             preg_match( "/{$regex}/iU", $item['html'], $match );
 
-            if ( empty( $match[1] ) AND $name != 'discount' ){
+            if ( empty( $match[1] ) ){
               $client->sendMessage( $chat_id, 'Товара по ссылке не существует, либо отсутствуют необходимые параметры' );
               exit();
             }
@@ -77,7 +77,7 @@ if ( isset( $update['message'] ) ) {
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "В наличии - [{$item['qunatity']} шт.]({$storage['ready']['url']})";
+          $text[] = "В наличии - [{$item['quantity']} шт.]({$storage['ready']['url']})";
 
           if ( isset( $item['discount'] ) )
           $text[] = "Скидка - имеется ([-{$item['discount']}%]({$storage['ready']['url']}))";

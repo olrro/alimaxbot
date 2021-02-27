@@ -11,7 +11,6 @@ $config['params'] = [
   '"formatTradeCount":"(.*)",' => 'orders',
   '"averageStar":"(.*)",' => 'rating',
   '"totalAvailQuantity":(.*)},' => 'quantity',
-  '"discount":(.*),' => 'discount',
 ];
 
 $config['react'] = [ '👍', '😜' ];
