@@ -121,11 +121,13 @@ if ( isset( $update['message'] ) ) {
 
           if ( isset( $storage['posts'][$text] ) ) {
 
-            $client->forwardMessage(
+            $a = $client->forwardMessage(
               $chat_id,
               '-1001432760770', null,
               $storage['posts'][$text]
             );
+
+            $client->debug( $chat_id, $a );
 
             unset( $storage['section'] );
 
