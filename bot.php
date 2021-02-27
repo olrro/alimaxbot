@@ -257,7 +257,7 @@ if ( isset( $update['callback_query'] ) ) {
 
       if ( !isset( $storage['rating'][$user_id][$message_id] ) ) {
 
-        $buttons[0][0]['text'] = $config['react'][0] . ' ' . ( intval( ltrim( $buttons[0][0]['text'], $config['react'][0] ) ) + 1 );
+        $buttons[1][0]['text'] = $config['react'][0] . ' ' . ( intval( ltrim( $buttons[1][0]['text'], $config['react'][0] ) ) + 1 );
         $storage['rating'][$user_id][$message_id] = time();
 
         $voted = 1;
@@ -268,7 +268,7 @@ if ( isset( $update['callback_query'] ) ) {
 
       if ( !isset( $storage['rating'][$user_id][$message_id] ) ) {
 
-        $buttons[0][1]['text'] = $config['react'][1] . ' ' . ( intval( ltrim( $buttons[0][1]['text'], $config['react'][1] ) ) + 1 );
+        $buttons[1][1]['text'] = $config['react'][1] . ' ' . ( intval( ltrim( $buttons[0][1]['text'], $config['react'][1] ) ) + 1 );
         $storage['rating'][$user_id][$message_id] = time();
 
         $voted = 1;
