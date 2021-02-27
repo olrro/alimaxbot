@@ -163,7 +163,7 @@ if ( isset( $update['message'] ) ) {
 
         $client->sendMessage(
           $chat_id,
-          'Привет, я бот который может публиковать пост на канале! Если ты администратор, то можешь вопспользоваться мной'
+          'Привет, я бот который может публиковать пост на канале! Если ты администратор, то можешь воспользоваться мной'
         );
 
       break;
@@ -194,41 +194,42 @@ if ( isset( $update['callback_query'] ) ) {
 
     if ( $update['data'] == "finger" ) {
 
-      if ( !isset( $storage['rating']['finger'][$user_id][$message_id] ) ) {
+      if ( !isset( $storage['rating'][$user_id][$message_id] ) ) {
 
         $buttons[0][0]['text'] = $config['react'][0] . ' ' . ( intval( ltrim( $buttons[0][0]['text'], $config['react'][0] ) ) + 1 );
-        $storage['rating']['finger'][$user_id][$message_id] = time();
+        $storage['rating'][$user_id][$message_id] = time();
 
-        $client->answerCallbackQuery( $id, 'Спасибо! Вы изменили рейтинг' );
-
-      }
-      else {
-
-        $client->answerCallbackQuery( $id, 'Вы уже проголосовали' );
+        $voted = 1;
 
       }
 
     } elseif ( $update['data'] == "emoji" ) {
 
-      if ( !isset( $storage['rating']['emoji'][$user_id][$message_id] ) ) {
+      if ( !isset( $storage['rating'][$user_id][$message_id] ) ) {
 
         $buttons[0][1]['text'] = $config['react'][1] . ' ' . ( intval( ltrim( $buttons[0][1]['text'], $config['react'][1] ) ) + 1 );
-        $storage['rating']['emoji'][$user_id][$message_id] = time();
+        $storage['rating'][$user_id][$message_id] = time();
 
-        $client->answerCallbackQuery( $id, 'Рейтинг был успешно изменен!' );
+        $voted = 1;
+
+      }
+
+      if ( isset( $voted ) ) {
+
+        $client->answerCallbackQuery( $id, 'Спасибо! Вы изменили рейтинг' );
+
+        $client->editMessageText(
+          $chat_id, $message_id, null, $message['text'],
+          null, $update['message']['entities'], null,
+          [ 'inline_keyboard' => $buttons ]
+        );
 
       }
       else {
 
-        $client->answerCallbackQuery( $id, 'Вы уже проголосовали' );
+        $client->answerCallbackQuery( $id, 'Вы уже голосовали' );
 
       }
-
-      $client->editMessageText(
-        $chat_id, $message_id, null, $message['text'],
-        null, $update['message']['entities'], null,
-        [ 'inline_keyboard' => $buttons ]
-      );
 
     }
 
