@@ -77,7 +77,7 @@ if ( isset( $update['message'] ) ) {
           $text = [];
 
           $text[] = "[​​​​​​​​​​​]({$item['image']}){$item['description']}" . PHP_EOL;
-          $text[] = "Цена - [{$item['price']} $]({$storage['ready']['url']})";
+          $text[] = "В наличии - [{$item['qunatity']} шт.]({$storage['ready']['url']})";
 
           if ( isset( $item['discount'] ) )
           $text[] = "Скидка - имеется ([-{$item['discount']}%]({$storage['ready']['url']}))";
