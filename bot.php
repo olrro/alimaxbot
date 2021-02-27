@@ -109,20 +109,25 @@ if ( isset( $update['message'] ) ) {
 
           if ( isset( $storage['posts'][$text] ) ) {
 
-            $answer = $client->forwardMessage(
-              $chat_id,
-              '-1001432760770', null,
-              $storage['posts'][$text]
-            );
+            foreach ( $storage['posts'][$text] as $id ) {
 
-            if ( !$answer->ok ) {
+              $answer = $client->forwardMessage(
+                $chat_id,
+                '-1001432760770', null,
+                $id
+              );
+
+              if ( !$answer->ok ) unset( $storage['posts'][$text] );
+              else $found = 1;
+
+            }
+
+            if ( !isset( $found ) ) {
 
               $client->sendMessage(
                 $chat_id,
                 'Поста с такой ссылкой не найдено, проверьте, что вы правильно указали адрес (например, протокол или / на конце)'
               );
-
-              unset( $storage['posts'][$text] );
 
             }
 
@@ -188,7 +193,7 @@ if ( isset( $update['message'] ) ) {
             ]
           );
 
-          $storage['posts'][$storage['ready']['url']] = $answer->result->message_id;
+          $storage['posts'][$storage['ready']['url']][] = $answer->result->message_id;
 
           unset( $storage['section'] );
           unset( $storage['ready'] );
